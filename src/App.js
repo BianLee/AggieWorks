@@ -1,25 +1,51 @@
-import logo from './logo.svg';
-import './App.css';
+import React, {useEffect, useState} from "react"
+import axios from "axios"; 
+export default function App() {
 
-function App() {
+  const [name, setName] = useState("");
+  const [index, setIndex]= useState(0);
+  const [errorMessage, setErrorMessage] = useState(""); 
+
+
+
+  async function getData() {
+    var url = `https://swapi.dev/api/people/${index}` 
+    console.log(index); 
+    axios.get(url)
+    .then(res => {  
+      setErrorMessage(""); 
+      const person = res.data;
+      console.log(person); 
+      setName(person.name); 
+    }) 
+    .catch(function (error) {
+      setErrorMessage("Error! Unable to query data. Please try again"); 
+      if (error.response) {
+        console.log(error.response.data);
+        console.log(error.response.status);
+        console.log(error.response.headers);
+      } else if (error.request) {
+        console.log(error.request);
+      } else {
+        console.log('Error', error.message); 
+      }
+    })
+  }
+
+
+
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    <>
+      <center>
+        <h1>STAR WARS CHARACTER</h1>
+        <input onChange={(e) => setIndex(e.target.value)}></input>
+        <button onClick={getData}>Search</button>
+        <p>{errorMessage}</p>
+        <p>{name}</p>
+      </center>
+      
+    </>
+   
+  )
 }
-
-export default App;
